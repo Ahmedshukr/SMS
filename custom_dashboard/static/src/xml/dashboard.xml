@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<template>
+    <t t-name="CustomDashBoard">
+        <div class="oh_dashboards" style="margin-top: 20px;">
+            <div class="container-fluid o_pj_dashboard">
+            </div>
+        </div>
+    </t>
+    <t t-name="DashboardStudent">
+        <div class="row main-section" style="margin-left: 10px;">
+            <div class="col-md-3 col-sm-6 tot_projects oh-payslip">
+                <div class="oh-card" style="width: 275px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one">
+                            <div class="stat-icon" style="background:#e08048;">
+                                <i class="fa fa-users"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Total No. of Students</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget.total_students"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 tot_emp oh-payslip">
+                <div class="oh-card" style="width: 275px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one">
+                            <div class="stat-icon" style="background:#645bd0">
+                                <i class="fa fa-male"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Male Students</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget.male_students"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 tot_tasks oh-payslip">
+                <div class="oh-card" style="width: 275px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one">
+                            <div class="stat-icon" style="background:#85d05b">
+                                <i class="fa fa-female"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Female Students</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget.female_students"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 aver_age oh-payslip">
+                <div class="oh-card" style="width: 275px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one">
+                            <div class="stat-icon" style="background:#85d05b">
+                                <i class="fa fa-graduation-cap"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Total No. of Alumni Students</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget.total_alumni"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="GenderDistribution">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="oh-card" style="margin-left: -50px; width: 400px; height: 350px">
+                        <div class="oh-card-header">
+                            <div class="oh-card-title">School Standards Distribution</div>
+                        </div>
+                        <div class="oh-card-body" style="width: 400px; height: 280px">
+                            <canvas id="school_standards_bar_chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="oh-card" style="margin-left: -20px; width: 400px; height: 350px">
+                        <div class="oh-card-header">
+                            <div class="oh-card-title">Gender Distribution</div>
+                        </div>
+                        <div class="oh-card-body" style="width: 400px; height: 280px">
+                            <canvas id="gender_pie_chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="oh-card" style="margin-left: 15px; width: 400px; height: 350px">
+                        <div class="oh-card-header">
+                            <div class="oh-card-title">Admissions Per Academic Year</div>
+                        </div>
+                        <div class="oh-card-body" style="width: 400px; height: 280px">
+                            <canvas id="academic_year_bar_chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+<!--    <t t-name="AdmissionsPerAcademicYear">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-3">-->
+<!--                    <div class="oh-card" style="width: 400px; height: 350px">-->
+<!--                        <div class="oh-card-header">-->
+<!--                            <div class="oh-card-title">Admission Distribution</div>-->
+<!--                        </div>-->
+<!--                        <div class="oh-card-body" style="width: 400px; height: 280px">-->
+<!--                            <canvas id="admission_bar_chart"></canvas>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </t>-->
+</template>
+
