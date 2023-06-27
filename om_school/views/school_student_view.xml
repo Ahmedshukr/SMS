@@ -1,0 +1,927 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="action_get_school_attendance" model="ir.actions.act_window">
+        <field name="name">School Attendance</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.attendance</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('class_division', '=', active_id)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first student attendance record !
+            </p>
+        </field>
+    </record>
+    <record id="action_get_school_timetable" model="ir.actions.act_window">
+        <field name="name">School Timetable</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.timetable</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('division_id', '=', active_id)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first timetable record !
+            </p>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="student_info_kanban_view">
+        <field name="name">student.info.kanban</field>
+        <field name="model">student.info</field>
+        <field name="arch" type="xml">
+            <kanban create="0" class="o_res_partner_kanban">
+                <field name="color"/>
+                <field name="id"/>
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="standard"/>
+                <field name="school_class"/>
+                <field name="gender"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <t t-set="color" t-value="kanban_color(record.color.raw_value || record.name.raw_value)"/>
+                        <div t-att-class="color + (record.color.raw_value == 1 ? ' oe_kanban_color_alert' : '')">
+                            <div class="oe_kanban_box oe_kanban_color_border">
+                                <div class="oe_kanban_box_header oe_kanban_color_bgdark oe_kanban_color_border oe_kanban_draghandle">
+                                    <table class="oe_kanban_table">
+                                        <tr>
+                                            <td class="oe_kanban_title1" align="left" valign="middle"
+                                                style="padding-left:10px;">
+                                                <h4>
+                                                    <a type="open">
+                                                        <field name="name"/>
+                                                    </a>
+                                                </h4>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_box_show_onclick_trigger oe_kanban_color_border">
+                                    <table class="oe_kanban_table">
+                                        <tr width="300">
+                                            <td valign="top" width="64" align="left">
+                                                <a type="open">
+                                                    <img heigh="80" width="80"
+                                                         t-att-src="kanban_image('student.info', 'image', record.id.raw_value)"
+                                                         alt="image"/>
+                                                </a>
+                                            </td>
+                                            <td valign="top" align="left" style="padding-left:10px;">
+                                                <table>
+                                                    <tr>
+                                                        <td>Student ID :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="student_id"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Standard :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="standard"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Class :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="school_class"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gender :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="gender"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--  Search View of Students -->
+    <record id="view_school_student_search" model="ir.ui.view">
+        <field name="name">student.info.search</field>
+        <field name="model">student.info</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id" filter_domain="['|', '|', '|', ('student_id', 'ilike', self), ('name', 'ilike', self),
+                ('school_class', 'ilike', self), ('standard', 'ilike', self)]"/>
+                <field name="name" string="Name"/>
+                <field name="standard"/>
+                <field name="school_class" widget="badge"/>
+            </search>
+        </field>
+    </record>
+    <!--   -->
+    <record id="view_school_student_tree" model="ir.ui.view">
+        <field name="name">student.info.tree</field>
+        <field name="model">student.info</field>
+        <field name="arch" type="xml">
+            <tree create="0" delete="0" export_xlsx="0">
+                <field name="student_id"/>
+                <field name="name" string="Name"/>
+                <field name="age"/>
+                <field name="standard"/>
+                <field name="school_class" widget="badge"/>
+                <field name="gender" widget="badge"/>
+                <field name="address_one"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_school_student_form" model="ir.ui.view">
+        <field name="name">student.info.form</field>
+        <field name="model">student.info</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0">
+                <sheet>
+                    <div class="oe_button_box top-align-buttons" name="button_box"
+                         style="margin-top: -120px">
+                        <button name="%(om_school.action_get_school_attendance)d" type="action" class="oe_stat_button"
+                                icon="fa-calendar" string="Attendance"/>
+                        <button name="om_school.action_get_exam_results" type="action" class="oe_stat_button"
+                                icon="fa-archive" string="Exam Results"/>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h3>
+                            <field name="student_id" readonly="1"/>
+                        </h3>
+                        <h2>
+                            <label for="name" string="Name" class="oe_edit_only"/>
+                            <field name="name"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="standard"/>
+                            <!--                            <field name="standard" widget="selection"/>-->
+                            <field name="school_class"/>
+                            <field name="addmission_date"/>
+                            <field name="academic_year"/>
+                            <field name="school"/>
+                            <field name="application_number" invisible="1"/>
+                        </group>
+                        <group string="General Information">
+                            <field name="gender" widget="radio"/>
+                            <field name="date_of_birth"/>
+                            <field name="age"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Address Information">
+                            <label for="address_one" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="address_one" placeholder="address..." class="o_address_street"/>
+                                <field name="district" placeholder="district..." class="o_address_street"/>
+                                <!--                                <field name="country_id" placeholder="Country" class="o_address_country,oe_no_button" required="1" options="{&quot;no_open&quot;: True}" attrs="{'readonly':[('state','=','alumni')]}"/>-->
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <!--                                <field name="state_id" class="o_address_state" domain="[('country_id','=',country_id)]" placeholder="State" options="{&quot;no_open&quot;: True}" required="1" attrs="{'readonly':[('state','=','alumni')]}"/>-->
+                                <!--                                <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly':[('state','=','alumni')]}"/>-->
+                            </div>
+                        </group>
+                        <group>
+                            <field name="class_division"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Parents">
+                            <field name="reference_ids" nolabel="1">
+                                <tree string="Reference" editable="top">
+                                    <field name="parent_name"/>
+                                    <field name="relation"/>
+                                    <field name="phone"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Previous School">
+                            <field name="previous_school_ids">
+                                <tree editable="top">
+                                    <field name="name"/>
+                                    <field name="standard"/>
+                                    <field name="grade"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_student_information" model="ir.actions.act_window">
+        <field name="name">Student Information</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">student.info</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first student record !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_student_master"
+              name="Students"
+              parent="menu_school_root"
+              sequence="10"/>
+
+    <menuitem id="menu_student_information"
+              name="Student Information"
+              parent="menu_student_master"
+              sequence="5"/>
+
+    <menuitem id="menu_student"
+              name="Students"
+              action="action_student_information"
+              parent="menu_student_information"
+              sequence="5"/>
+
+
+    <!-- School Alumni Details -->
+    <record model="ir.ui.view" id="school_alumni_info_kanban_view">
+        <field name="name">school.alumni.kanban</field>
+        <field name="model">school.alumni</field>
+        <field name="arch" type="xml">
+            <kanban create="0" class="o_res_partner_kanban">
+                <field name="color"/>
+                <field name="id"/>
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="standard"/>
+                <field name="school_class"/>
+                <field name="gender"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <t t-set="color" t-value="kanban_color(record.color.raw_value || record.name.raw_value)"/>
+                        <div t-att-class="color + (record.color.raw_value == 1 ? ' oe_kanban_color_alert' : '')">
+                            <div class="oe_kanban_box oe_kanban_color_border">
+                                <div class="oe_kanban_box_header oe_kanban_color_bgdark oe_kanban_color_border oe_kanban_draghandle">
+                                    <table class="oe_kanban_table">
+                                        <tr>
+                                            <td class="oe_kanban_title1" align="left" valign="middle"
+                                                style="padding-left:10px;">
+                                                <h4>
+                                                    <a type="open">
+                                                        <field name="name"/>
+                                                    </a>
+                                                </h4>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_box_show_onclick_trigger oe_kanban_color_border">
+                                    <table class="oe_kanban_table">
+                                        <tr width="300">
+                                            <td valign="top" width="64" align="left">
+                                                <a type="open">
+                                                    <img heigh="80" width="80"
+                                                         t-att-src="kanban_image('student.info', 'image', record.id.raw_value)"
+                                                         alt="image"/>
+                                                </a>
+                                            </td>
+                                            <td valign="top" align="left" style="padding-left:10px;">
+                                                <table>
+                                                    <tr>
+                                                        <td>Student ID :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="student_id"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Standard :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="standard"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Class :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="school_class"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gender :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="gender"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!--   -->
+    <record id="view_school_alumni_search" model="ir.ui.view">
+        <field name="name">school.alumni.search</field>
+        <field name="model">school.alumni</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id" filter_domain="['|', '|', '|', ('student_id', 'ilike', self), ('name', 'ilike', self),
+                ('school_class', 'ilike', self), ('standard', 'ilike', self)]"/>
+                <field name="name" string="Name"/>
+                <field name="standard"/>
+                <field name="school_class" widget="badge"/>
+            </search>
+        </field>
+    </record>
+    <!--   -->
+    <record id="view_school_alumni_tree" model="ir.ui.view">
+        <field name="name">school.alumni.tree</field>
+        <field name="model">school.alumni</field>
+        <field name="arch" type="xml">
+            <tree create="0" delete="0" export_xlsx="0">
+                <field name="student_id"/>
+                <field name="name" string="Name"/>
+                <field name="age"/>
+                <field name="standard"/>
+                <field name="school_class" widget="badge"/>
+                <field name="gender" widget="badge"/>
+                <field name="address_one"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_school_alumni_form" model="ir.ui.view">
+        <field name="name">school.alumni.form</field>
+        <field name="model">school.alumni</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0" edit="0">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h3>
+                            <field name="student_id" readonly="1"/>
+                        </h3>
+                        <h2>
+                            <label for="name" string="Name" class="oe_edit_only"/>
+                            <field name="name"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="standard"/>
+                            <!--                            <field name="standard" widget="selection"/>-->
+                            <field name="school_class"/>
+                            <field name="addmission_date"/>
+                            <field name="academic_year"/>
+                            <field name="school"/>
+                            <!--                            <field name="application_number" invisible="1"/>-->
+                        </group>
+                        <group string="General Information">
+                            <field name="gender" widget="radio"/>
+                            <field name="date_of_birth"/>
+                            <field name="age"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Address Information">
+                            <label for="address_one" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="address_one" placeholder="address..." class="o_address_street"/>
+                                <field name="district" placeholder="district..." class="o_address_street"/>
+                                <!--                                <field name="country_id" placeholder="Country" class="o_address_country,oe_no_button" required="1" options="{&quot;no_open&quot;: True}" attrs="{'readonly':[('state','=','alumni')]}"/>-->
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <!--                                <field name="state_id" class="o_address_state" domain="[('country_id','=',country_id)]" placeholder="State" options="{&quot;no_open&quot;: True}" required="1" attrs="{'readonly':[('state','=','alumni')]}"/>-->
+                                <!--                                <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly':[('state','=','alumni')]}"/>-->
+                            </div>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Parents">
+                            <field name="reference_ids" nolabel="1">
+                                <tree string="Reference" editable="top">
+                                    <field name="parent_name"/>
+                                    <field name="relation"/>
+                                    <field name="phone"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!-- School Alumni Action -->
+    <record id="action_alumni_information" model="ir.actions.act_window">
+        <field name="name">School Alumni Information</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.alumni</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first student record !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_alumni_master"
+              name="Alumni"
+              action="action_alumni_information"
+              parent="menu_student_information"
+              sequence="10"/>
+
+
+    <!--    <record id="view_school_alumni_search" model="ir.ui.view">-->
+    <!--        <field name="name">school.alumni.search</field>-->
+    <!--        <field name="model">school.alumni</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <search>-->
+    <!--                <field name="student_id" filter_domain="['|', '|', '|', ('student_id', 'ilike', self), ('name', 'ilike', self),-->
+    <!--                ('school_class', 'ilike', self), ('standard', 'ilike', self)]"/>-->
+    <!--                <field name="name" string="Name"/>-->
+    <!--                <field name="standard"/>-->
+    <!--                <field name="school_class" widget="badge"/>-->
+    <!--            </search>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <!--   -->
+
+
+    <!-- Kanban View of School Class Division -->
+    <record model="ir.ui.view" id="view_school_class_division_kanban">
+        <field name="name">school.class.division.kanban</field>
+        <field name="model">school.class.division</field>
+        <field name="arch" type="xml">
+            <kanban class="school_class_division_kanban">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="actual_strength"/>
+                <field name="academic_year"/>
+                <field name="teacher_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_res_partner_kanban">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings" style="text-align:center !important;">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
+                                <ul style="text-align:center !important;">
+                                    <li t-if="record.actual_strength.raw_value">
+                                        Strength :
+                                        <field name="actual_strength"/>
+                                    </li>
+                                    <li t-if="record.student_count.raw_value">
+                                        Students :
+                                        <field name="student_count"/>
+                                    </li>
+                                    <li t-if="record.academic_year.raw_value">
+                                        Academic Year :
+                                        <field name="academic_year"/>
+                                    </li>
+                                    <li t-if="record.teacher_id.raw_value">
+                                        Form Master :
+                                        <field name="teacher_id"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--   -->
+    <record id="view_school_class_division_search" model="ir.ui.view">
+        <field name="name">school.class.division.search</field>
+        <field name="model">school.class.division</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="teacher_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Academic Year" name="group_by_academic_year"
+                            context="{'group_by':'academic_year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_school_class_division_tree" model="ir.ui.view">
+        <field name="name">school.class.division.tree</field>
+        <field name="model">school.class.division</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name" string="Name"/>
+                <field name="student_count"/>
+                <field name="class_id"/>
+                <field name="division_id"/>
+                <!--                <field name="academic_year_id"/>-->
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_school_class_division_form" model="ir.ui.view">
+        <field name="name">school.class.division.form</field>
+        <field name="model">school.class.division</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="view_students" type="object" widget="statinfo"
+                                class="oe_stat_button" icon="fa-user"
+                                attrs="{'invisible': [('student_count', '=', 0)]}">
+                            <field name="student_count" widget="statinfo" string="Students"/>
+                        </button>
+                        <button name="%(om_school.action_get_school_timetable)d" type="action"
+                                class="oe_stat_button" icon="fa-list-alt"
+                                string="Timetable"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" string="Name"/>
+                            <field name="actual_strength"/>
+                            <field name="student_count"/>
+                        </group>
+                        <group>
+                            <field name="academic_year" readonly="1"/>
+                            <field name="teacher_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="class_id"/>
+                        </group>
+                        <group>
+                            <field name="division_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Students">
+                            <field name="student_ids" nolabel="1">
+                                <tree string="Students" editable="bottom" create="false">
+                                    <field name="name"/>
+                                    <field name="class_id"/>
+                                    <field name="gender"/>
+                                    <field name="date_of_birth"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!-- School Alumni Action -->
+    <record id="action_school_class_division" model="ir.actions.act_window">
+        <field name="name">School Class Division</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.class.division</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'search_default_group_by_academic_year': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first student record !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_students_class_division"
+              name="Student's Class Division"
+              parent="menu_student_master"
+              sequence="15"/>
+
+    <menuitem id="menu_class_division"
+              name="Class Division"
+              action="action_school_class_division"
+              parent="menu_students_class_division"
+              sequence="10"/>
+
+
+    <!-- Attendance Tree View-->
+    <record id="school_student_attendance_tree" model="ir.ui.view">
+        <field name="name">school.attendance.tree</field>
+        <field name="model">school.attendance</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="division_id"/>
+                <field name="class_id"/>
+                <field name="date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Attendance Form View-->
+    <record id="school_student_attendance_form" model="ir.ui.view">
+        <field name="name">school.attendance.form</field>
+        <field name="model">school.attendance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="attendance_done" type="object"
+                            attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('attendance_created', '=', False)]}"
+                            class="oe_highlight" string="Done"/>
+                    <button name="set_to_draft" type="object" attrs="{'invisible': [('state', '=', 'draft')]}"
+                            string="Set to Draft" groups="education_core.group_education_principal"/>
+                    <field name="state" readonly="1" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="division_id" attrs="{'readonly': [('attendance_created', '=', True)]}"/>
+                            <field name="faculty_id" attrs="{'readonly': [('attendance_created', '=', True)]}"/>
+                            <field name="class_id" invisible="1"/>
+                            <field name="school" invisible="1"/>
+                            <field name="academic_year" invisible="1"/>
+                            <field name="class_division" invisible="0"/>
+                        </group>
+                        <group>
+                            <field name="date" attrs="{'readonly': [('attendance_created', '=', True)]}"/>
+                            <field name="attendance_created" invisible="1"/>
+                            <field name="all_marked_morning" invisible="1"/>
+                            <field name="all_marked_afternoon" invisible="1"/>
+                        </group>
+                    </group>
+                    <div style="padding-bottom: 10px;">
+                        <button style="padding: 1px 5px;background: #5fb18e !important;border-color: #63b892 !important;"
+                                string="Create Attendance Table"
+                                name="create_attendance_line" type="object"
+                                attrs="{'invisible': [('attendance_created', '=', True)]}" class="oe_highlight"/>
+                    </div>
+                    <div style="height: 30px;" attrs="{'invisible': [('attendance_created', '=', False)]}">
+                        <div style="width: 78%;float:left;text-align:right;padding-right: 75px;"
+                             attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('all_marked_morning', '=', True)]}">
+                            <button style="padding: 1px 5px;background-color: #5fb18d !important;border-color: #5fb18d !important;"
+                                    string="Mark All" name="mark_all_present_morning" type="object"
+                                    class="oe_highlight"/>
+                        </div>
+                        <div style="width: 78%;float:left;text-align:right;padding-right: 75px;"
+                             attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('all_marked_morning', '=', False)]}">
+                            <button style="padding: 1px 5px;background-color: #e25151;border-color: #e0e0e0;color:#575751;"
+                                    string="Un Mark" name="un_mark_all_present_morning" type="object"
+                                    class="oe_highlight"/>
+                        </div>
+                        <div style="width:22%;float:left;padding-left:1%;"
+                             attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('all_marked_afternoon', '=', True)]}">
+                            <button style="padding: 1px 5px;background-color: #5fb18d !important;border-color: #5fb18d !important;"
+                                    string="Mark All" name="mark_all_present_afternoon" type="object"
+                                    class="oe_highlight"/>
+                        </div>
+                        <div style="width:22%;float:left;padding-left:1%;"
+                             attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('all_marked_afternoon', '=', False)]}">
+                            <button style="padding: 1px 5px;background-color: #e25151;border-color: #e0e0e0;color:#575751;"
+                                    string="Un Mark" name="un_mark_all_present_afternoon" type="object"
+                                    class="oe_highlight"/>
+                        </div>
+                    </div>
+                    <div class="table_header_box" attrs="{'invisible': [('attendance_created', '=', False)]}">
+                        <field name="attendance_line" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                            <tree editable="bottom" create="false" delete="false">
+                                <field name="student_id" invisible="1"/>
+                                <field name="student_name" readonly="1" style=" width: 500px; "/>
+                                <field name="present_morning"/>
+                                <field name="present_afternoon"/>
+                                <field name="class_id" invisible="1"/>
+                                <field name="division_id" invisible="1"/>
+                                <field name="date" invisible="1"/>
+                            </tree>
+                        </field>
+                    </div>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Attendance  -->
+    <!-- Student Attendance Action -->
+    <record id="action_school_attendance" model="ir.actions.act_window">
+        <field name="name">School Attendance</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.attendance</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first student attendance record !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_school_attendance"
+              name="Student's Attendance"
+              parent="menu_student_master"
+              sequence="20"/>
+
+    <menuitem id="menu_student_attendance"
+              name="Attendance"
+              action="action_school_attendance"
+              parent="menu_school_attendance"
+              sequence="15"/>
+
+    <record id="view_school_timetable_tree" model="ir.ui.view">
+        <field name="name">school.timetable.tree</field>
+        <field name="model">school.timetable</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="class_id"/>
+                <field name="academic_year"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_school_timetable_form" model="ir.ui.view">
+        <field name="name">school.timetable.form</field>
+        <field name="model">school.timetable</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                   options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group string="Academic Year Information">
+                            <field name="academic_year"/>
+                            <field name="school" readonly="1"/>
+                        </group>
+                        <group string="Standard Information">
+                            <field name="class_id"/>
+                            <field name="division_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Saturday">
+                            <field name="timetable_sat" domain="[('week_day','=', 5)]"
+                                   context="{'default_week_day': '5'}">
+                                <tree string="Saturday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible='1'/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Sunday">
+                            <field name="timetable_sun" domain="[('week_day','=', 6)]"
+                                   context="{'default_week_day': '6'}">
+                                <tree string="Sunday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible='1'/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Monday">
+                            <field name="timetable_mon" domain="[('week_day','=', 0)]"
+                                   context="{'default_week_day': '0'} ">
+                                <tree string="Monday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible='1'/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Tuesday">
+                            <field name="timetable_tue" domain="[('week_day','=', 1)]"
+                                   context="{'default_week_day': '1'}">
+                                <tree string="Tuesday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible='1'/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Wednesday">
+                            <field name="timetable_wed" domain="[('week_day','=', 2)]"
+                                   context="{'default_week_day': '2'}">
+                                <tree string="Wednesday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from"/>
+                                    <field name="time_till"/>
+                                    <field name="subject"/>
+                                    <field name="faculty_id"/>
+                                    <!--<field name="week_day"/>-->
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Thursday">
+                            <field name="timetable_thur" domain="[('week_day','=', 3)]"
+                                   context="{'default_week_day': '3'}">
+                                <tree string="Thursday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible='1'/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- admission registers action   -->
+    <record id="action_school_timetable" model="ir.actions.act_window">
+        <field name="name">School Timetable</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.timetable</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first timetable record !
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_timetable"
+              name="School Timetable"
+              parent="menu_student_master"
+              sequence="25"/>
+
+    <menuitem id="menu_school_timetable"
+              name="Timetable"
+              action="action_school_timetable"
+              parent="menu_timetable"
+              sequence="25"/>
+
+</odoo>

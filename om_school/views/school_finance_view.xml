@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--    <record id="view_school_application_search" model="ir.ui.view">-->
+    <!--        <field name="name">school.applicationregister.search</field>-->
+    <!--        <field name="model">school.applicationregister</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <search>-->
+    <!--            </search>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <record id="view_school_fees_tree" model="ir.ui.view">
+        <field name="name">school.fees.tree</field>
+        <field name="model">school.fees</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="student_ids"/>
+                <field name="category_id"/>
+                <field name="month"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="amount"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_school_fees_form" model="ir.ui.view">
+        <field name="name">school.fees.form</field>
+        <field name="model">school.fees</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="category_id"/>
+                            <!--                            <field name="payment_term_id"/>-->
+                            <!--                            <field name="payment_method_id"/>-->
+                        </group>
+                        <group>
+                            <field name="month"/>
+                            <field name="amount"/>
+                        </group>
+                        <group string="Fee Schedule">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <field name="student_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- admission registers action   -->
+    <record id="action_school_fees" model="ir.actions.act_window">
+        <field name="name">School Fees</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.fees</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first fee record !
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_school_fees"
+              name="School Fees"
+              action="action_school_fees"
+              parent="menu_finance"
+              sequence="0"/>
+
+    <!--    <menuitem id="menu_application"-->
+    <!--              name="Applications"-->
+    <!--              action="action_school_application_register"-->
+    <!--              parent="menu_admission"-->
+    <!--              sequence="50"/>-->
+
+
+    <record id="view_school_fees_category_tree" model="ir.ui.view">
+        <field name="name">school.fees.category.tree</field>
+        <field name="model">school.fees.category</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_school_fees_category_form" model="ir.ui.view">
+        <field name="name">school.fees.category.form</field>
+        <field name="model">school.fees.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                        </group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- admission registers action   -->
+    <record id="action_school_fees_category" model="ir.actions.act_window">
+        <field name="name">School Fees Category</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.fees.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first fee category record !
+            </p>
+        </field>
+    </record>
+
+
+</odoo>

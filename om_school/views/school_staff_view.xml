@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View of Administration -->
+    <!-- Kanban View of Administration  -->
+    <record model="ir.ui.view" id="administration_info_kanban_view">
+        <field name="name">administration.info.kanban</field>
+        <field name="model">administration.info</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban">
+                <field name="color"/>
+                <field name="id"/>
+                <field name="name"/>
+                <field name="role"/>
+                <field name="admin_contact"/>
+                <field name="admin_email"/>
+                <field name="gender"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <t t-set="color" t-value="kanban_color(record.color.raw_value || record.name.raw_value)"/>
+                        <div t-att-class="color + (record.color.raw_value == 1 ? ' oe_kanban_color_alert' : '')" style="height: 130px; width: 350px;">
+                            <div class="oe_kanban_box oe_kanban_color_border">
+                                <div class="oe_kanban_box_header oe_kanban_color_bgdark oe_kanban_color_border oe_kanban_draghandle">
+                                    <table class="oe_kanban_table">
+                                        <tr>
+                                            <td class="oe_kanban_title1" align="left" valign="middle"
+                                                style="padding-left:10px;">
+                                                <h4>
+                                                    <a type="open">
+                                                        <field name="name"/>
+                                                    </a>
+                                                </h4>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_box_show_onclick_trigger oe_kanban_color_border">
+                                    <table class="oe_kanban_table">
+                                        <tr width="300">
+                                            <td valign="top" width="64" align="left">
+                                                <a type="open">
+                                                    <img heigh="80" width="80"
+                                                         t-att-src="kanban_image('administration.info', 'image', record.id.raw_value)"
+                                                         alt="image"/>
+                                                </a>
+                                            </td>
+                                            <td valign="top" align="left" style="padding-left:10px;">
+                                                <table>
+                                                    <tr>
+                                                        <td>Position :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="role"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Phone :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="admin_contact"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Email :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="admin_email"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gender :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="gender"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_school_administration_tree" model="ir.ui.view">
+        <field name="name">administration.info.tree</field>
+        <field name="model">administration.info</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="admin_id"/>
+                <field name="name"/>
+                <field name="role"/>
+                <field name="status" widget="boolean_toggle"/>
+                <field name="date_of_appointment"/>
+                <field name="gender"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_school_administration_form" model="ir.ui.view">
+        <field name="name">administration.info.form</field>
+        <field name="model">administration.info</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h3>
+                            <field name="admin_id" readonly="1"/>
+                        </h3>
+                        <h2>
+                            <label for="name" string="Name" class="oe_edit_only"/>
+                            <field name="name" placeholder="Name"/>
+                        </h2>
+                        <h3>
+                            <label for="role" string="Administration Role" class="oe_edit_only"/>
+                            <field name="role" placeholder="Role"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="department"/>
+                            <field name="school"/>
+                            <field name="is_parent" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="date_of_appointment"/>
+                            <field name="status" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Public Information">
+                            <group>
+                                <group string="School Address">
+                                    <label for="working_address" string="Address"/>
+                                    <div class="o_address_format">
+                                        <field name="working_address" class="o_address_street" readonly="1"/>
+                                        <field name="work_village" placeholder="address..."
+                                               class="o_address_street" readonly="1"/>
+                                        <field name="work_district" placeholder="district..."
+                                               class="o_address_street" readonly="1"/>
+                                        <field name="city" placeholder="City" class="o_address_city"
+                                               readonly="1"/>
+                                    </div>
+                                </group>
+                                <group string="Position Details">
+                                    <field name="position"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Personal Information">
+                            <group>
+                                <group string="Address Information">
+                                    <label for="address_one" string="Teacher Address"/>
+                                    <div class="o_address_format">
+                                        <field name="address_one" placeholder="address..." class="o_address_street"/>
+                                        <field name="district" placeholder="district..." class="o_address_street"/>
+                                        <field name="city" placeholder="City" class="o_address_city"/>
+                                    </div>
+                                    <field name="admin_contact"/>
+                                    <field name="admin_email"/>
+                                </group>
+                                <group string="Status">
+                                    <field name="gender" widget="radio"/>
+                                    <field name="marital_status" widget="radio"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- principal information action   -->
+    <record id="action_staff_administration" model="ir.actions.act_window">
+        <field name="name">Administration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">administration.info</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create the administration of the school !
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_staff"
+              name="School Staff Departments"
+              parent="menu_staff_master"
+              sequence="40"/>
+
+    <menuitem id="menu_administration"
+              name="Administration"
+              action="action_staff_administration"
+              parent="menu_staff"
+              sequence="50"/>
+
+
+    <!-- View of Teacher -->
+    <!-- Kanban View of Teachers  -->
+    <record model="ir.ui.view" id="teacher_info_kanban_view">
+        <field name="name">teacher.info.kanban</field>
+        <field name="model">teacher.info</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban">
+                <field name="color"/>
+                <field name="id"/>
+                <field name="name"/>
+                <field name="position"/>
+                <field name="teacher_contact"/>
+                <field name="teacher_email"/>
+                <field name="gender"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <t t-set="color" t-value="kanban_color(record.color.raw_value || record.name.raw_value)"/>
+                        <div t-att-class="color + (record.color.raw_value == 1 ? ' oe_kanban_color_alert' : '')"
+                             style="height: 130px; width: 350px;">
+                            <div class="oe_kanban_box oe_kanban_color_border">
+                                <div class="oe_kanban_box_header oe_kanban_color_bgdark oe_kanban_color_border oe_kanban_draghandle">
+                                    <table class="oe_kanban_table">
+                                        <tr>
+                                            <td class="oe_kanban_title1" align="left" valign="middle"
+                                                style="padding-left:10px;">
+                                                <h4>
+                                                    <a type="open">
+                                                        <field name="name"/>
+                                                    </a>
+                                                </h4>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="oe_kanban_box_content oe_kanban_color_bglight oe_kanban_box_show_onclick_trigger oe_kanban_color_border">
+                                    <table class="oe_kanban_table">
+                                        <tr width="300">
+                                            <td valign="top" width="64" align="left">
+                                                <a type="open">
+                                                    <img heigh="80" width="80"
+                                                         t-att-src="kanban_image('teacher.info', 'image', record.id.raw_value)"
+                                                         alt="image"/>
+                                                </a>
+                                            </td>
+                                            <td valign="top" align="left" style="padding-left:10px;">
+                                                <table>
+                                                    <tr>
+                                                        <td>Position :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="position"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Phone :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="teacher_contact"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Email :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="teacher_email"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gender :</td>
+                                                        <td style="padding-left:10px;">
+                                                            <b>
+                                                                <field name="gender"/>
+                                                            </b>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!-- Tree View of Teachers -->
+    <record id="view_school_staff_teachers_tree" model="ir.ui.view">
+        <field name="name">teacher.info.tree</field>
+        <field name="model">teacher.info</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name"/>
+                <field name="subjects" widget="many2many_tags"/>
+                <field name="gender"/>
+                <field name="standards_taught" widget="many2many_tags"/>
+                <field name="department"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Form View of Teachers -->
+    <record id="view_school_staff_teachers_form" model="ir.ui.view">
+        <field name="name">teacher.info.form</field>
+        <field name="model">teacher.info</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h2>
+                            <label for="name" string="Name" class="oe_edit_only"/>
+                            <field name="name"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="subjects" widget="many2many_tags"/>
+                            <field name="school"/>
+                        </group>
+                        <group>
+                            <field name="standards_taught" widget="many2many_tags"/>
+                            <field name="is_parent" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Public Information">
+                            <group>
+                                <group string="School Address">
+                                    <label for="working_address" string="Address"/>
+                                    <div class="o_address_format">
+                                        <field name="working_address" class="o_address_street" readonly="1"/>
+                                        <field name="work_village" placeholder="address..."
+                                               class="o_address_street" readonly="1"/>
+                                        <field name="work_district" placeholder="district..."
+                                               class="o_address_street" readonly="1"/>
+                                        <field name="city" placeholder="City" class="o_address_city"
+                                               readonly="1"/>
+                                    </div>
+                                </group>
+                                <group string="Position Details">
+                                    <field name="department"/>
+                                    <field name="position"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Personal Information">
+                            <group>
+                                <group string="Address Information">
+                                    <label for="address_one" string="Teacher Address"/>
+                                    <div class="o_address_format">
+                                        <field name="address_one" placeholder="address..." class="o_address_street"/>
+                                        <field name="district" placeholder="district..." class="o_address_street"/>
+                                        <field name="city" placeholder="City" class="o_address_city"/>
+                                    </div>
+                                    <field name="teacher_contact"/>
+                                    <field name="teacher_email"/>
+                                </group>
+                                <group string="Status">
+                                    <field name="gender" widget="radio"/>
+                                    <field name="marital_status" widget="radio"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!-- teacher's information action   -->
+    <record id="action_staff_teacher" model="ir.actions.act_window">
+        <field name="name">Teachers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">teacher.info</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create school teacher's record !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_teacher"
+              name="Teachers"
+              action="action_staff_teacher"
+              parent="menu_staff"
+              sequence="60"/>
+
+
+    <!-- Views of Other Staff -->
+    <!-- Tree View of Other Staff -->
+    <record id="view_school_staff_other_tree" model="ir.ui.view">
+        <field name="name">otherstaff.info.tree</field>
+        <field name="model">otherstaff.info</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name"/>
+                <field name="role"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Form View of Other Staff -->
+    <record id="view_school_staff_other_form" model="ir.ui.view">
+        <field name="name">otherstaff.info.form</field>
+        <field name="model">otherstaff.info</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="role"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- staff information action   -->
+    <record id="action_staff_other" model="ir.actions.act_window">
+        <field name="name">Other Staff</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">otherstaff.info</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create the record the of the other staff!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_other_staff"
+              name="Other Staff"
+              action="action_staff_other"
+              parent="menu_staff"
+              sequence="70"/>
+
+</odoo>

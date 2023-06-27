@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="custom_dashboard_action" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">custom_dashboard_tags</field>
+    </record>
+
+    <menuitem name="Dashboard"
+              id="custom_dashboard"
+              parent="menu_school_root"
+              action="custom_dashboard_action" sequence="0"/>
+
+
+
+
+<!--    <template id="assets_dashboard" name="Dashboard assets" inherit_id="web.assets_backend">-->
+<!--        <xpath expr="." position="inside">-->
+<!--            <script type="text/javascript" src="/custom_dashboard/static/src/js/chart_dashboard.js"/>-->
+<!--        </xpath>-->
+<!--    </template>-->
+</odoo>

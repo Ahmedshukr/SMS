@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_school_application_search" model="ir.ui.view">
+        <field name="name">school.applicationregister.search</field>
+        <field name="model">school.applicationregister</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="standard"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_school_application_tree" model="ir.ui.view">
+        <field name="name">school.applicationregister.tree</field>
+        <field name="model">school.applicationregister</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'submit'" decoration-warning="state == 'confirm'"
+                  decoration-danger="state == 'cancel'" decoration-success="state == 'done'" export_xlsx="0">
+                <field name="application_number"/>
+                <field name="name"/>
+                <field name="standard"/>
+                <field name="school_class"/>
+                <field name="admission_date"/>
+                <field name="application_date"/>
+                <field name="gender"/>
+                <field name="academic_year"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'submit'"
+                       decoration-warning="state == 'confirm'"
+                       decoration-muted="state == 'draft'"
+                       decoration-danger="state == 'cancel'"
+                       decoration-success="state == 'done'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_school_application_form" model="ir.ui.view">
+        <field name="name">school.applicationregister.form</field>
+        <field name="model">school.applicationregister</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Submit" states="draft" class="oe_highlight" type="object" name="submit_form"/>
+                    <button name="confirm_in_progress" states="submit" string="Confirm" type="object"
+                            class="oe_highlight"/>
+                    <button name="enroll_student" states="confirm" string="Enroll" type="object"
+                            class="oe_highlight"/>
+                    <button name="confirm_cancel" string="Cancel" states="confirm,draft,submit" type="object"/>
+                    <button name="confirm_to_draft" states="cancel" string="Set to Draft"
+                            type="object"/>
+                    <!--                    <button name="open_student" states="done" string="Open Student Profile" type="object"/>-->
+                    <field name="state" widget="statusbar" nolabel="1"
+                           statusbar_visible="draft,submit,confirm,done"/>
+                </header>
+                <sheet>
+                    <field name="ribbon_visible" invisible="1"/>
+                    <widget name="web_ribbon" title="Paid" bg_color="bg-success"
+                            attrs="{'invisible': [('ribbon_visible', '=', False)]}"/>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h3>
+<!--                            <field name="student_id" readonly="1"/>-->
+                        </h3>
+                        <h2>
+                            <label for="name" string="Name" class="oe_edit_only"/>
+                            <field name="name"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Admission Details">
+                            <field name="academic_year" readonly="1"/>
+                            <field name="application_date"/>
+                            <field name="application_number" readonly="1"
+                                   default="lambda self: self.env['ir.sequence'].next_by_code('school.applicationregister')"/>
+                            <field name="admission_date"/>
+                            <field name="school" readonly="1"/>
+                        </group>
+                        <group string="Standard Details">
+                            <field name="standard"/>
+                            <field name="school_class"/>
+                            <field name="class_division"/>
+                        </group>
+                        <group string="School Fee">
+                            <field name="paid" widget="boolean_toggle"/>
+                            <field name="fees"/>
+                            <field name="fee_start"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Personal Information">
+                            <group>
+                                <group>
+                                    <label for="address_one" string="Address"/>
+                                    <div class="o_address_format">
+                                        <field name="address_one" placeholder="address..." class="o_address_street"/>
+                                        <field name="district" placeholder="district..." class="o_address_street"/>
+                                        <field name="city" placeholder="City" class="o_address_city"/>
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="gender"/>
+                                    <field name="date_of_birth"/>
+                                    <field name="age"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Parents">
+                            <field name="reference_ids" nolabel="1">
+                                <tree string="Reference" editable="top">
+                                    <field name="parent_name"/>
+                                    <field name="relation"/>
+                                    <field name="phone"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Previous School">
+                            <field name="previous_school_ids">
+                                <tree editable="top">
+                                    <field name="name"/>
+                                    <field name="standard"/>
+                                    <field name="grade"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- admission registers action   -->
+    <record id="action_school_application_register" model="ir.actions.act_window">
+        <field name="name">Admissions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.applicationregister</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first application record !
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_admission"
+              name="Admissions"
+              action="action_school_application_register"
+              parent="menu_school_root"
+              sequence="1"/>
+
+    <!--    <menuitem id="menu_application"-->
+    <!--              name="Applications"-->
+    <!--              action="action_school_application_register"-->
+    <!--              parent="menu_admission"-->
+    <!--              sequence="50"/>-->
+
+
+</odoo>

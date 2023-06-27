@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_school_academic_year_tree" model="ir.ui.view">
+        <field name="name">schoolacademic.year.tree</field>
+        <field name="model">schoolacademic.year</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="state" invisible="1"/>
+                <field name="current" widget="boolean_toggle" attrs="{'readonly': [('state','=', 'shifted')]}"/>
+                <field name="date_start"/>
+                <field name="date_stop"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_school_academic_year_form" model="ir.ui.view">
+        <field name="name">schoolacademic.year</field>
+        <field name="model">schoolacademic.year</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="generate_academicmonth" type="object" string="Generate Months"/>
+                    <button name="set_to_current_academicyear" type="object" string="Set it Current"
+                            class="oe_highlight" attrs="{'invisible': [('state', '=', 'shifted')]}"/>
+                    <button name="standard_shift" type="object" string="Shift Standards"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|', ('current', '=', False), ('state', '=', 'shifted')]}"
+                            states="{'invisible': [('state', '=', 'shifted')]}"/>
+                    <field name="state" widget="statusbar" nolabel="1"
+                           statusbar_visible="not_shifted,shifted"/>
+                </header>
+                <sheet>
+                    <group string="Academic Year Information">
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                            <field name="current" widget="boolean_toggle"
+                                   attrs="{'readonly': [('state','=', 'shifted')]}"/>
+                        </group>
+                    </group>
+                    <group string="Term Structure">
+                        <field name="term_structure"/>
+                        <group>
+                            <field name="date_start" placeholder="Start Date"/>
+                            <field name="term_start" placeholder="Start Date"/>
+                        </group>
+                        <group>
+                            <field name="term_end" placeholder="End Date"/>
+                            <field name="date_stop" placeholder="End Date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Months" name="Term One">
+                            <field name="term_one_month_ids" widget="one2many">
+                                <tree string="Months">
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="date_start"/>
+                                    <field name="date_stop"/>
+                                </tree>
+                                <form string="Months">
+                                    <group col="4" colspan="4">
+                                        <field name="name" placeholder="Name"/>
+                                        <field name="code" placeholder="Code"/>
+                                        <field name="date_start" placeholder="Start Date"/>
+                                        <field name="date_stop" placeholder="Stop Date"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <!--                        <page string="Term II Months" name="Term One">-->
+                        <!--                            <field name="term_two_month_ids" widget="one2many">-->
+                        <!--                                <tree>-->
+                        <!--                                    <field name="name"/>-->
+                        <!--                                    <field name="code"/>-->
+                        <!--                                    <field name="term_start"/>-->
+                        <!--                                    <field name="term_end"/>-->
+                        <!--                                </tree>-->
+                        <!--                                <form string="Months">-->
+                        <!--                                    <group col="4" colspan="4">-->
+                        <!--                                        <field name="name" placeholder="Name"/>-->
+                        <!--                                        <field name="code" placeholder="Code"/>-->
+                        <!--                                        <field name="term_start" placeholder="Start Date"/>-->
+                        <!--                                        <field name="term_end" placeholder="Stop Date"/>-->
+                        <!--                                    </group>-->
+                        <!--                                </form>-->
+                        <!--                            </field>-->
+                        <!--                        </page>-->
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--Action of the academic year-->
+    <record id="action_school_academic_year" model="ir.actions.act_window">
+        <field name="name">School Academic Year</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">schoolacademic.year</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Academic Year !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_school_config"
+              name="School Configuration"
+              parent="menu_configuration"
+              sequence="20"/>
+
+    <menuitem id="menu_school_academic_year"
+              name="Academic Year"
+              action="action_school_academic_year"
+              parent="menu_school_config"
+              sequence="30"/>
+
+
+    <!-- Tree View of Standard -->
+    <record id="view_school_standard_tree" model="ir.ui.view">
+        <field name="name">school.standards.tree</field>
+        <field name="model">school.standards</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name"/>
+                <field name="sequence"/>
+                <field name="code"/>
+                <field name="division_ids" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Form View of Standards -->
+    <record id="view_school_standard_form" model="ir.ui.view">
+        <field name="name">school.standards.form</field>
+        <field name="model">school.standards</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Division/s" name="divisions">
+                            <field name="division_ids" widget="one2many" attrs="{'size': 10}">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--action of the school standards-->
+    <record id="action_school_standards" model="ir.actions.act_window">
+        <field name="name">Standards</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.standards</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first standard !
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_school_standard"
+              name="Standards"
+              action="action_school_standards"
+              parent="menu_school_config"
+              sequence="40"/>
+
+    <!--   Tree View of Subjects    -->
+    <record id="view_school_subject_tree" model="ir.ui.view">
+        <field name="name">school.subject.tree</field>
+        <field name="model">school.subject</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="minimum_marks"/>
+                <field name="maximum_marks"/>
+            </tree>
+        </field>
+    </record>
+    <!--  Form View of Subjects  -->
+    <record id="view_school_subject_form" model="ir.ui.view">
+        <field name="name">school.subject.form</field>
+        <field name="model">school.subject</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="maximum_marks"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                            <field name="minimum_marks"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Teacher/s" name="Teachers">
+                            <field name="teacher_ids" widget="one2many">
+                                <tree>
+                                    <field name="teachers"/>
+                                    <field name="working_shift"/>
+                                    <!--                                    <field name=""/>-->
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="teachers"/>
+                                            <field name="working_shift"/>
+                                            <field name="subject_id" invisible="1"
+                                                   attrs="{'invisible': [('id', '!=', False)]}"/>
+                                            <field name="id" invisible="1"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--  action of the school subjects  -->
+    <record id="action_school_subjects" model="ir.actions.act_window">
+        <field name="name">Subjects</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.subject</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first subject !
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_school_subject"
+              name="Subjects"
+              action="action_school_subjects"
+              parent="menu_school_config"
+              sequence="50"/>
+
+
+    <!--   Tree View of School Information    -->
+    <record id="view_school_exam_type_tree" model="ir.ui.view">
+        <field name="name">school.exam.type.tree</field>
+        <field name="model">school.exam.type</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name"/>
+                <field name="school_class_division_wise"/>
+                <field name="school_class_division_scope"/>
+                <field name="school"/>
+            </tree>
+        </field>
+    </record>
+    <!--  Form View of School Information  -->
+    <record id="view_school_exam_type_form" model="ir.ui.view">
+        <field name="name">school.exam.type.form</field>
+        <field name="model">school.exam.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <h1>
+                        <field name="name" placeholder="Eg: Annual Exam"/>
+                    </h1>
+                    <group>
+                        <field name="school_class_division_wise" widget="radio"/>
+                    </group>
+                    <group>
+                        <field name="school_class_division_scope" widget="radio"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- School Exam information   -->
+    <record id="action_school_exam_type" model="ir.actions.act_window">
+        <field name="name">School Exam Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.exam.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first school exam type !
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_school_exam_type"
+              name="Exam Types"
+              action="action_school_exam_type"
+              parent="menu_school_config"
+              sequence="60"/>
+
+
+    <!--   Tree View of School Information    -->
+    <record id="view_school_information_tree" model="ir.ui.view">
+        <field name="name">school.info.tree</field>
+        <field name="model">school.info</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+    <!--  Form View of School Information  -->
+    <record id="view_school_information_form" model="ir.ui.view">
+        <field name="name">school.info.form</field>
+        <field name="model">school.info</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="student_age_required" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                            <field name="school_standards" widget="many2many_tags"/>
+                            <field name="language" readonly="1"/>
+                        </group>
+                        <group string="Address Information">
+                            <label for="address_one" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="address_one" placeholder="address..." class="o_address_street"/>
+                                <field name="district" placeholder="district..." class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                            </div>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                        <group string="School Staff">
+                            <field name="principal"/>
+                            <field name="teachers_total"/>
+                        </group>
+                    </group>
+                    <!--                    <notebook>-->
+                    <!--                        <page string="Teacher/s" name="Teachers">-->
+                    <!--                            <field name="teacher_ids" widget="one2many">-->
+                    <!--                                <tree>-->
+                    <!--                                    <field name="teachers"/>-->
+                    <!--                                    <field name="working_shift"/>-->
+                    <!--                                    &lt;!&ndash;                                    <field name=""/>&ndash;&gt;-->
+                    <!--                                </tree>-->
+                    <!--                                <form>-->
+                    <!--                                    <group>-->
+                    <!--                                        <group>-->
+                    <!--                                            <field name="teachers"/>-->
+                    <!--                                            <field name="working_shift"/>-->
+                    <!--                                            <field name="subject_id" invisible="1"-->
+                    <!--                                                   attrs="{'invisible': [('id', '!=', False)]}"/>-->
+                    <!--                                            <field name="id" invisible="1"/>-->
+                    <!--                                        </group>-->
+                    <!--                                    </group>-->
+                    <!--                                </form>-->
+                    <!--                            </field>-->
+                    <!--                        </page>-->
+                    <!--                    </notebook>-->
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- School information   -->
+    <record id="action_school_info" model="ir.actions.act_window">
+        <field name="name">School Information</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.info</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first school information !
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_school_info"
+              name="School information"
+              action="action_school_info"
+              parent="menu_school_config"
+              sequence="65"/>
+
+
+</odoo>

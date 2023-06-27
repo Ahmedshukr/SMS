@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="school_exam_tree" model="ir.ui.view">
+        <field name="name">school.exam.tree</field>
+        <field name="model">school.exam</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="exam_type"/>
+                <field name="class_id"/>
+                <field name="division_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state"/>
+                <field name="academic_year" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="school_exam_form" model="ir.ui.view">
+        <field name="name">school.exam.form</field>
+        <field name="model">school.exam</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="confirm_exam" type="object" attrs="{'invisible': [('state', '!=', 'draft')]}"
+                            class="oe_highlight" string="Confirm"/>
+                    <button name="close_exam" type="object" attrs="{'invisible': [('state', '!=', 'ongoing')]}"
+                            string="Close"
+                            confirm="After closing the exam, you can't do valuation. You can close the exam only after the completion of valuation process. Do you want to proceed?"/>
+                    <button name="cancel_exam" type="object" attrs="{'invisible': [('state', '!=', 'draft')]}"
+                            string="Cancel"/>
+                    <field name="state" readonly="1" widget="statusbar" statusbar_visible="draft,ongoing,close"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="exam_type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="class_id"
+                                   attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('school_class_division_wise', 'not in', ['class', 'final'])], 'required': [('school_class_division_wise', 'in', ['class', 'final'])]}"/>
+                            <field name="division_id"
+                                   attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('school_class_division_wise', 'not in', ['division'])], 'required': [('school_class_division_wise', 'in', ['division'])]}"/>
+                            <field name="academic_year"
+                                   attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': ['|', ('school_class_division_wise', 'in', ['division']), ('exam_type', '=', False)], 'required': [('division_id', '=', False)]}"/>
+                            <field name="school_class_division_wise" invisible="1"/>
+                            <field name="class_division_hider" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="start_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="end_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Subjects">
+                            <field name="subject_line" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                                <tree editable="bottom">
+                                    <field name="subject_id"/>
+                                    <field name="date"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_to" widget="float_time"/>
+                                    <field name="mark"/>
+                                    <field name="exam_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- school exams action   -->
+    <record id="action_school_exam" model="ir.actions.act_window">
+        <field name="name">School Exams</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.exam</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first school exam record !
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_exam"
+              name="Exam"
+              parent="menu_school_root"
+              sequence="25"/>
+
+    <menuitem id="menu_school_exam"
+              name="School Exams"
+              action="action_school_exam"
+              parent="menu_exam"
+              sequence="10"/>
+
+
+    <!-- Exam Valuation -->
+    <!-- Exam Valuation Tree View -->
+    <record id="exam_valuation_tree" model="ir.ui.view">
+        <field name="name">school.exam.valuation.tree</field>
+        <field name="model">school.exam.valuation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="exam_id"/>
+                <field name="subject_id"/>
+                <field name="class_id"/>
+                <!--                <field name="division_id"/>-->
+                <!--                <field name="teachers_id"/>-->
+                <!--                <field name="state"/>-->
+                <!--                <field name="academic_year" invisible="1"/>-->
+            </tree>
+        </field>
+    </record>
+
+    <record id="student_exam_valuation_form" model="ir.ui.view">
+        <field name="name">school.exam.valuation.form</field>
+        <field name="model">school.exam.valuation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="valuation_completed" type="object"
+                            attrs="{'invisible': ['|', ('mark_sheet_created', '=', False),('state', '!=', 'draft')]}"
+                            class="oe_highlight" string="Completed"/>
+                    <button name="valuation_canceled" type="object"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}" string="Cancel"/>
+                    <button name="set_to_draft" type="object" attrs="{'invisible': [('state', '!=', 'completed')]}"
+                            string="Set to Draft"/>
+                    <field name="state" readonly="1" widget="statusbar" statusbar_visible="draft,completed"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="exam_id"/>
+                            <!--                                   attrs="{'readonly': ['|', ('mark_sheet_created', '=', True), ('state', '!=', 'draft')]}"/>-->
+                            <field name="subject_id" widget="selection"/>
+                            <!--                                   attrs="{'readonly': ['|', ('mark_sheet_created', '=', True), ('state', '!=', 'draft')]}"/>-->
+                            <field name="teachers_id"/>
+                            <!--                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>-->
+                            <field name="date"/>
+                            <!--                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>-->
+                        </group>
+                        <group>
+                            <field name="mark"/>
+                            <!--                                       attrs="{'readonly': [('state', '!=', 'draft')]}"/>-->
+                            <field name="pass_mark"/>
+                            <!--                                       attrs="{'readonly': [('state', '!=', 'draft')]}"/>-->
+                            <field name="class_id"/>
+                            <!--                                       attrs="{'readonly': ['|', ('mark_sheet_created', '=', True), ('state', '!=', 'draft')]}"/>-->
+                            <field name="division_id"/>
+                            <!--                                       attrs="{'readonly': ['|', ('mark_sheet_created', '=', True), ('state', '!=', 'draft')]}"/>-->
+                            <field name="academic_year" invisible="1"/>
+                            <field name="mark_sheet_created" invisible="1"/>
+                        </group>
+                    </group>
+                    <div style="padding-bottom: 10px;">
+                        <button style="padding: 1px 5px;" string="Create Mark Sheet" name="create_mark_sheet"
+                                type="object"
+                                class="oe_highlight"/>
+                        <!--                                    attrs="{'invisible': ['|', ('mark_sheet_created', '=', True), ('state', '=', 'cancel')]}"-->
+
+                    </div>
+                    <notebook attrs="{'invisible': [('mark_sheet_created', '=', False)]}">
+                        <page string="Mark Sheet">
+                            <field name="valuation_line">
+                                <!--                                       attrs="{'readonly': [('state', '!=', 'draft')]}">-->
+                                <tree create="0" editable="bottom">
+                                    <field name="student_id" invisible="1"/>
+                                    <field name="student_name" readonly="1"/>
+                                    <field name="mark_scored"/>
+                                    <field name="pass_or_fail" widget="boolean_toggle"/>
+                                    <field name="valuation_id" invisible="1"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="student_id"/>
+                                            <field name="mark_scored"/>
+                                            <field name="pass_or_fail" widget="boolean_toggle"/>
+                                            <field name="valuation_id" invisible="1"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="act_exam_valuation" model="ir.actions.act_window">
+        <field name="name">School Exam Valuation</field>
+        <field name="res_model">school.exam.valuation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first school exam record !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_exam_valuation"
+              name="Exam Valuation"
+              action="act_exam_valuation"
+              parent="menu_exam"
+              sequence="18"/>
+
+
+    <!-- Exam Results -->
+    <!-- Exam Results Tree View -->
+    <record id="exam_result_tree_view" model="ir.ui.view">
+        <field name="name">school.exam.results.tree</field>
+        <field name="model">school.exam.results</field>
+        <field name="arch" type="xml">
+            <tree create="0">
+                <field name="exam_id" invisible="1"/>
+                <field name="student_id" invisible="1"/>
+                <field name="student_name"/>
+                <field name="class_id"/>
+                <field name="division_id"/>
+                <field name="academic_year" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Exam Results Form View -->
+    <record id="exam_result_form_view" model="ir.ui.view">
+        <field name="name">school.exam.results.form</field>
+        <field name="model">school.exam.results</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0">
+                <sheet>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="student_id" invisible="1"/>
+                            <field name="student_name"/>
+                            <field name="exam_id"/>
+                        </group>
+                        <group>
+                            <field name="class_id"/>
+                            <field name="division_id"/>
+                            <field name="academic_year" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Mark Sheet">
+                            <field name="subject_line">
+                                <tree>
+                                    <field name="subject_id"/>
+                                    <field name="max_mark" sum="Total"/>
+                                    <field name="pass_mark" sum="Total"/>
+                                    <field name="mark_scored" sum="Total"/>
+                                    <field name="pass_or_fail" widget="boolean_toggle" readonly="1"/>
+                                    <field name="result_id" invisible="1"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="subject_id"/>
+                                            <field name="max_mark"/>
+                                            <field name="pass_mark"/>
+                                            <field name="mark_scored"/>
+                                            <field name="pass_or_fail" widget="boolean_toggle" readonly="1"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_mark_scored" sum="Scored Total"/>
+                                <field name="overall_pass" widget="boolean_toggle"/>
+                            </group>
+                            <div class="oe_clear"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--    <record id="exam_result_search" model="ir.ui.view">-->
+    <!--            <field name="name">school.exam.results.search</field>-->
+    <!--            <field name="model">school.exam.results</field>-->
+    <!--            <field name="arch" type="xml">-->
+    <!--                <search string="Exam Results">-->
+    <!--                    <group expand="1" string="Group By">-->
+    <!--                        <filter string="Class" name="group_class_id" context="{'group_by':'class_id'}"/>-->
+    <!--                        <filter string="Division" name="group_division_id" context="{'group_by':'division_id'}"/>-->
+    <!--                        <filter string="Exam" name="group_exam_id" context="{'group_by':'exam_id'}"/>-->
+    <!--                        <filter string="Academic Year" name="group_academic_year"-->
+    <!--                                context="{'group_by':'academic_year'}"/>-->
+    <!--                    </group>-->
+    <!--                </search>-->
+    <!--            </field>-->
+    <!--        </record>-->
+
+
+    <record id="action_exam_results" model="ir.actions.act_window">
+        <field name="name">School Exam Results</field>
+        <field name="res_model">school.exam.results</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first school exam record !
+            </p>
+        </field>
+    </record>
+
+    <record id="action_get_exam_results" model="ir.actions.act_window">
+        <field name="name">School Exam Results</field>
+        <field name="res_model">school.exam.results</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('student_id','=',active_id)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first school exam record !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_exam_results"
+              name="Exam Results"
+              action="action_exam_results"
+              parent="menu_exam"
+              sequence="20"/>
+
+
+</odoo>

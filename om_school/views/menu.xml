@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_school_root"
+              name="SMS"
+              web_icon="om_school/static/description/icon.png"
+              sequence="0"/>
+
+
+    <menuitem id="menu_staff_master"
+              name="Staff"
+              parent="menu_school_root"
+              sequence="20"/>
+
+    <menuitem id="menu_configuration"
+              name="Configurations"
+              parent="menu_school_root"
+              sequence="30"/>
+
+    <menuitem id="menu_finance"
+              name="Finance"
+              parent="menu_school_root"
+              sequence="25"/>
+
+    <menuitem id="menu_reports"
+              name="Reports"
+              parent="menu_school_root"
+              sequence="40"/>
+
+
+
+
+
+</odoo>
