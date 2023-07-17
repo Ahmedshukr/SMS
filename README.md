@@ -5,3 +5,6 @@ To explore the landing page, please visit [SMS-Landing-page](https://ahmedshukr.
 
 * [School Management System](./om_school): In here, you can get the school management system module without the dashboard. In this section, It contains all the necessary data for simple school management system, such as student information, attendance management, akumni students information, timetable of subjects (courses), examination and grading system, simple dashboard
 * [School Dashboard](./custom_dashboard): This is the dashboard of the school management system, it highlights the necessary information about the school such as; Total Number of Students, Total number of alumni students, students in terms of gender count, standards that the school has.
+
+## Installation
+For Windows users which is the mostly designated users for this project can install this project by having Odoo and PostgreSQL installed on their computers first.
