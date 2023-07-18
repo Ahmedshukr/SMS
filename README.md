@@ -16,3 +16,6 @@ For Windows users which is the mostly designated users for this project can inst
 This is a simple school management system, so its usage is also simple. First you need to define the academic year, standards and divisions (classess) of the school, attendance, timetable. After that, all you need is to start admission of the students.
 
 I have developed this simple school management system from start up to its last stage of development, and it is designed for the public and private high schools in Hargeisa, Somaliland. There may another related projects. 
+
+## Licensing
+The School Management System is open source and available under the [MIT License](https://opensource.org/license/mit/). You are free to modify and distribute the software as per the terms of this license.
