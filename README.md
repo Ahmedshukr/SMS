@@ -7,4 +7,9 @@ To explore the landing page, please visit [SMS-Landing-page](https://ahmedshukr.
 * [School Dashboard](./custom_dashboard): This is the dashboard of the school management system, it highlights the necessary information about the school such as; Total Number of Students, Total number of alumni students, students in terms of gender count, standards that the school has.
 
 ## Installation
-For Windows users which is the mostly designated users for this project can install this project by having Odoo and PostgreSQL installed on their computers first.
+For Windows users which is the mostly designated users for this project can install this project by having Odoo and PostgreSQL installed on their computers first. Then you need to copy school management system into the installation folder, then all you need is to access it by using localhost.
+
+## Usage
+This is a simple school management system, so its usage is also simple. First you need to define the academic year, standards and divisions (classess) of the school, attendance, timetable. After that, all you need is to start admission of the students.
+
+I have developed this simple school management system from start up to its last stage of development, and it is designed for the public and private high schools in Hargeisa, Somaliland. There may another related projects. 
