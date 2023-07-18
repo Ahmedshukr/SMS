@@ -1,4 +1,7 @@
 # School Management System - SMS
+
+![Screenshot from 2023-05-19 00-02-08](https://github.com/Ahmedshukr/SMS/assets/55732936/394ed802-b9e7-4848-a3cf-9ee36405fb31)
+
 Welcome to the School Management System! This project aims to streamline and enhance administrative processes in educational institutions. It provides a comprehensive solution for managing student information, exams and grading, attendance tracking, admissions, alumni management, and human resources. With a user-friendly interface and powerful functionalities, the School Management System empowers educators and administrators to focus on providing quality education to students.
 
 To explore the landing page, please visit [SMS-Landing-page](https://ahmedshukr.github.io/SMS-landing-page/). For more details about the project and its development journey, check out our [Final Project Blog Article](https://www.linkedin.com/pulse/simple-school-management-system-ahmed-muhumed/?published=t) for a comprehensive overview. Feel free to connect with the author on [LinkedIn](https://www.linkedin.com/in/ahmed-muhumed/) for further discussions and collaborations.
