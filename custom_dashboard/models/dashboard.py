@@ -1,3 +1,4 @@
+# In here we have a custom dashboard model, which contains the necessary backend functions of our school dashboard
 from odoo import api, fields, models, _
 
 
@@ -10,6 +11,7 @@ class CustomDashboard(models.Model):
 class StudentInfoDashboard(models.Model):
     _inherit = 'student.info'
 
+    # a method to get student stats such as their number
     @api.model
     def get_student_stats(self):
         student_data = self.env['student.info'].search([])
@@ -37,6 +39,7 @@ class StudentInfoDashboard(models.Model):
                 'female_students': female_students, 'total_alumni': total_alumni,
                 'standard_student_count': standard_student_count, 'academic_year_student_count': academic_year_student_count,}
 
+    # a function to get the gender distribution
     @api.model
     def get_gender_distribution(self):
         student_data = self.env['student.info'].search([])
