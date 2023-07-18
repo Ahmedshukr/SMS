@@ -4,6 +4,7 @@ from datetime import date
 from dateutil import relativedelta
 from odoo.exceptions import ValidationError, UserError
 
+# this model contains the admission methods
 
 class SchoolApplicationRegister(models.Model):
     _name = 'school.applicationregister'
