@@ -8,11 +8,4 @@
     <menuitem name="Dashboard"
               id="custom_dashboard"
               action="custom_dashboard_action"/>
-
-
-<!--    <template id="assets_dashboard" name="Dashboard assets" inherit_id="web.assets_backend">-->
-<!--        <xpath expr="." position="inside">-->
-<!--            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.min.js"></script>-->
-<!--        </xpath>-->
-<!--    </template>-->
 </odoo>
