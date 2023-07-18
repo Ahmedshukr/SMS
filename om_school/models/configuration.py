@@ -3,6 +3,7 @@ from dateutil.relativedelta import relativedelta
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
+# configuration methods such as academic year and etc
 
 class SchoolConfiguration(models.Model):
     _name = 'school.configuration'
