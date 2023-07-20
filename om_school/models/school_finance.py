@@ -1,3 +1,4 @@
+# School Finance methods are defined in here
 from odoo import api, fields, models
 
 
