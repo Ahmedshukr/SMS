@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Sequences for student.info -->
+    <!-- Sequences for student info -->
     <record id="seq_student_info" model="ir.sequence">
         <field name="name">Student Info</field>
         <field name="code">student.info</field>
