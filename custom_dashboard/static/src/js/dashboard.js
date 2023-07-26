@@ -40,6 +40,7 @@ var CustomDashBoard = AbstractAction.extend({
 //               self.render_pie_chart(result.gender_data);
 //           });
 //       },
+   
        render_dashboards: function(){
        var self = this;
        _.each(this.dashboards_templates, function(template) {
